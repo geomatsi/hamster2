@@ -1,0 +1,129 @@
+substitutions:
+  <<: !include secrets.yaml
+
+esphome:
+  name: astra
+  platform: ESP8266
+  board: d1_mini
+
+wifi:
+  ssid: ${wifi_ssid}
+  password: ${wifi_password}
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "astra_ap"
+    password: ${ota_password}
+
+mqtt:
+  broker: 192.168.88.22
+
+captive_portal:
+
+# enable logging
+logger:
+  level: INFO
+
+# enable Home Assistant API
+api:
+  reboot_timeout: 30min
+
+ota:
+  safe_mode: True
+  password: ${ota_password}
+
+binary_sensor:
+# aerotank level
+- platform: gpio
+  name: "aerotank"
+  id: aerotank
+  pin: D0
+  device_class: moisture
+# input tank low level
+- platform: gpio
+  name: "input tank low"
+  id: input_level_low
+  pin: D5
+  device_class: moisture
+# input tank level mid
+- platform: gpio
+  name: "input tank mid"
+  id: input_level_mid
+  pin: D6
+  device_class: moisture
+# input tank level high
+- platform: gpio
+  name: "input tank high"
+  id: input_level_high
+  pin: D7
+  device_class: moisture
+
+sensor:
+  - platform: adc
+    name: "light"
+    id: light
+    pin: A0
+    update_interval: 20s
+
+# WDG/LED blink
+switch:
+- platform: gpio
+  pin: D4
+  id: wdg_led
+  inverted: yes
+
+# timers
+interval:
+  - interval: 1sec
+    then:
+      - switch.toggle: wdg_led
+  - interval: 30sec
+    then:
+      if:
+        condition:
+          mqtt.connected:
+        then:
+          - mqtt.publish:
+              topic: "/astra/aerotank/high"
+              payload: !lambda |-
+                return id(aerotank).state ? "1" : "0";
+  - interval: 30sec
+    then:
+      if:
+        condition:
+          mqtt.connected:
+        then:
+          - mqtt.publish:
+              topic: "/astra/input/low"
+              payload: !lambda |-
+                return id(input_level_low).state ? "1" : "0";
+  - interval: 30sec
+    then:
+      if:
+        condition:
+          mqtt.connected:
+        then:
+          - mqtt.publish:
+              topic: "/astra/input/mid"
+              payload: !lambda |-
+                return id(input_level_mid).state ? "1" : "0";
+  - interval: 30sec
+    then:
+      if:
+        condition:
+          mqtt.connected:
+        then:
+          - mqtt.publish:
+              topic: "/astra/input/high"
+              payload: !lambda |-
+                return id(input_level_high).state ? "1" : "0";
+  - interval: 30sec
+    then:
+      if:
+        condition:
+          mqtt.connected:
+        then:
+          - mqtt.publish:
+              topic: "/astra/light"
+              payload: !lambda |-
+                return to_string((float)(id(light).state));
