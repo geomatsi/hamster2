@@ -5,6 +5,8 @@ esphome:
   name: astra
   platform: ESP8266
   board: d1_mini
+  includes:
+    - LM75A.h
 
 wifi:
   ssid: ${wifi_ssid}
@@ -17,6 +19,12 @@ wifi:
 
 mqtt:
   broker: 192.168.88.22
+
+i2c:
+  - id: bus_a
+    sda: 5
+    scl: 4
+    scan: True
 
 captive_portal:
 
@@ -64,6 +72,16 @@ sensor:
     id: light
     pin: A0
     update_interval: 20s
+  - platform: custom
+    lambda: |-
+      auto lm75a = new LM75A();
+      App.register_component(lm75a);
+      return {lm75a};
+    sensors:
+      name: "temperature"
+      id: temp
+      unit_of_measurement: °C
+      accuracy_decimals: 1
 
 # WDG/LED blink
 switch:
@@ -127,3 +145,13 @@ interval:
               topic: "/astra/light"
               payload: !lambda |-
                 return to_string((float)(id(light).state));
+  - interval: 30sec
+    then:
+      if:
+        condition:
+          mqtt.connected:
+        then:
+          - mqtt.publish:
+              topic: "/astra/temp"
+              payload: !lambda |-
+                return to_string((float)(id(temp).state));
