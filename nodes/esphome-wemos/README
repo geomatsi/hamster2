@@ -1,0 +1,8 @@
+Compile firmware
+$ docker run --rm -v "${PWD}":/config -it esphome/esphome wemos-test1.yaml compile
+
+Load firmware via serial port or using mDNS:
+$ docker run --rm -v "${PWD}":/config --device=/dev/ttyUSB0 -it esphome/esphome wemos-test1.yaml upload
+
+OTA firmware upload using direct IP address
+$ docker run --rm -v "${PWD}":/config -it esphome/esphome wemos-test1.yaml upload --upload-port <device ip address>

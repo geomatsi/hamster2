@@ -1,0 +1,137 @@
+substitutions:
+  <<: !include secrets.yaml
+
+esphome:
+  name: wemos_test1
+  platform: ESP8266
+  board: d1_mini
+
+wifi:
+  ssid: ${wifi_ssid}
+  password: ${wifi_password}
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "wemos_test1_ap"
+    password: ${ota_password}
+
+mqtt:
+  broker: 192.168.88.22
+
+captive_portal:
+
+# enable logging
+logger:
+  level: INFO
+
+# enable Home Assistant API
+api:
+  reboot_timeout: 30min
+
+ota:
+  safe_mode: True
+  password: ${ota_password}
+
+binary_sensor:
+# air tank level
+- platform: gpio
+  name: "air tank"
+  id: air_level
+  pin: D0
+  filters:
+    - invert:
+  device_class: moisture
+# input tank level 1
+- platform: gpio
+  name: "input tank low"
+  id: input_level_1
+  pin: D5
+  filters:
+    - invert:
+  device_class: moisture
+# input tank level 2
+- platform: gpio
+  name: "input tank mid"
+  id: input_level_2
+  pin: D6
+  filters:
+    - invert:
+  device_class: moisture
+# input tank level 3
+- platform: gpio
+  name: "input tank high"
+  id: input_level_3
+  pin: D7
+  filters:
+    - invert:
+  device_class: moisture
+
+sensor:
+  - platform: adc
+    name: "light"
+    id: light
+    pin: A0
+    update_interval: 20s
+
+# WDG/LED blink
+switch:
+- platform: gpio
+  pin: D4
+  id: wdg_led
+  inverted: yes
+
+# timers
+interval:
+  - interval: 1sec
+    then:
+      - switch.toggle: wdg_led
+  - interval: 30sec
+    then:
+      if:
+        condition:
+          mqtt.connected:
+        then:
+          - mqtt.publish:
+              topic: "/wemos_test1/air_tank"
+              payload: !lambda |-
+                return id(air_level).state ? "1" : "0";
+  - interval: 30sec
+    then:
+      if:
+        condition:
+          mqtt.connected:
+        then:
+          - mqtt.publish:
+              topic: "/wemos_test1/input_level_1"
+              payload: !lambda |-
+                return id(input_level_1).state ? "1" : "0";
+  - interval: 30sec
+    then:
+      if:
+        condition:
+          mqtt.connected:
+        then:
+          - mqtt.publish:
+              topic: "/wemos_test1/input_level_2"
+              payload: !lambda |-
+                return id(input_level_2).state ? "1" : "0";
+  - interval: 30sec
+    then:
+      if:
+        condition:
+          mqtt.connected:
+        then:
+          - mqtt.publish:
+              topic: "/wemos_test1/input_level_3"
+              payload: !lambda |-
+                return id(input_level_3).state ? "1" : "0";
+  - interval: 30sec
+    then:
+      if:
+        condition:
+          mqtt.connected:
+        then:
+          - mqtt.publish:
+              topic: "/wemos_test1/light"
+              payload: !lambda |-
+                return to_string((float)(id(light).state));
