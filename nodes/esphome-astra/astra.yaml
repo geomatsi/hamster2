@@ -67,6 +67,10 @@ binary_sensor:
   device_class: moisture
 
 sensor:
+  - platform: wifi_signal
+    name: "WiFi signal"
+    id: rssi
+    update_interval: 20s
   - platform: adc
     name: "light"
     id: light
@@ -145,6 +149,16 @@ interval:
               topic: "/astra/light"
               payload: !lambda |-
                 return to_string((float)(id(light).state));
+  - interval: 30sec
+    then:
+      if:
+        condition:
+          mqtt.connected:
+        then:
+          - mqtt.publish:
+              topic: "/astra/signal"
+              payload: !lambda |-
+                return to_string((float)(id(rssi).state));
   - interval: 30sec
     then:
       if:
