@@ -1,0 +1,10 @@
+[Unit]
+Description=Create working directories for symlinks in /etc
+RequiresMountsFor=/var
+
+[Service]
+Type=oneshot
+ExecStartPre=/bin/mkdir -p /var/lib/docker/conf
+ExecStartPre=/bin/mkdir -p /var/lib/dropbear
+ExecStartPre=/bin/mkdir -p /var/ha
+ExecStart=/bin/true
