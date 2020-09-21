@@ -1,2 +1,2 @@
 /dev/root	/	auto	ro,discard,noatime	0	1
-/dev/mmcblk0p3	/var	auto	rw,discard,noatime	0	2
+/dev/mmcblk0p1	/var	auto	rw,discard,noatime	0	2
