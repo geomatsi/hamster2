@@ -1,0 +1,51 @@
+- id: input_tank
+  alias: input_tank
+  description: Input tank state notification
+  trigger:
+    - entity_id: binary_sensor.input_tank_high
+      platform: state
+      from: 'off'
+      to: 'on'
+      for:
+        seconds: 2
+    - entity_id: binary_sensor.input_tank_high
+      platform: state
+      from: 'on'
+      to: 'off'
+      for:
+        seconds: 2
+  action:
+    - service: notify.astra_status
+      data_template:
+        message: >
+          {% if is_state('binary_sensor.input_tank_high', 'on') %}
+            'Notify: input tank HIGH'
+          {% else %}
+            'Notify: input tank OK'
+          {% endif %}
+
+- id: aerotank
+  alias: aerotank
+  description: Aerotank state notification
+  trigger:
+    - entity_id: binary_sensor.aerotank
+      platform: state
+      from: 'off'
+      to: 'on'
+      for:
+        seconds: 2
+    - entity_id: binary_sensor.aerotank
+      platform: state
+      from: 'on'
+      to: 'off'
+      for:
+        seconds: 2
+  action:
+    - service: notify.astra_status
+      data_template:
+        message: >
+          {% if is_state('binary_sensor.aerotank', 'on') %}
+            'Notify: aerotank HIGH'
+          {% else %}
+            'Notify: aerotank OK'
+          {% endif %}

@@ -1,0 +1,56 @@
+default_config:
+
+lovelace:
+  mode: yaml
+
+telegram_bot:
+  - platform: polling
+    api_key: !secret telegram_api_key
+    allowed_chat_ids:
+      - !secret telegram_chat_id
+
+notify:
+  - name: astra_status
+    platform: telegram
+    chat_id: !secret telegram_chat_id
+
+binary_sensor:
+  - platform: mqtt
+    name: "Astra input tank"
+    state_topic: "/astra/input/high"
+    payload_on: "ON"
+    payload_off: "OFF"
+    device_class: moisture
+    value_template: "{%if value|regex_search('.*1$', ignorecase=TRUE)%}ON{%-else-%}OFF{%-endif%}"
+  - platform: mqtt
+    name: "Astra air tank"
+    state_topic: "/astra/aerotank/high"
+    payload_on: "ON"
+    payload_off: "OFF"
+    device_class: moisture
+    value_template: "{%if value|regex_search('^1.*', ignorecase=TRUE)%}ON{%-else-%}OFF{%-endif%}"
+
+sensor:
+  - platform: mqtt
+    state_topic: "/astra/light"
+    device_class: illuminance
+    name: "Astra light"
+  - platform: mqtt
+    state_topic: "/astra/temp"
+    device_class: temperature
+    unit_of_measurement: '°C'
+    name: "Astra temperature"
+  - platform: mqtt
+    state_topic: "/astra/signal"
+    device_class: signal_strength
+    unit_of_measurement: 'dBm'
+    name: "Astra WiFi RSSI"
+
+# Text to speech
+tts:
+  - platform: google_translate
+
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml

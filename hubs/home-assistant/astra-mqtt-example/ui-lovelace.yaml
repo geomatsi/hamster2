@@ -1,0 +1,39 @@
+views:
+  - badges:
+      - entity: binary_sensor.astra_input_tank
+      - entity: binary_sensor.astra_air_tank
+      - entity: sensor.astra_temperature
+      - entity: sensor.astra_wifi_rssi
+      - entity: sensor.astra_light
+      - entity: weather.home
+      - entity: sun.sun
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: entities
+            title: My Title
+            entities:
+              - binary_sensor.astra_input_tank
+              - binary_sensor.astra_air_tank
+              - sensor.astra_temperature
+              - sensor.astra_wifi_rssi
+              - sensor.astra_light
+              - sun.sun
+          - type: weather-forecast
+            entity: weather.home
+      - type: vertical-stack
+        cards:
+          - type: history-graph
+            entities:
+              - sensor.astra_temperature
+            hours_to_show: 24
+            refresh_interval: 0
+          - type: history-graph
+            entities:
+              - entity: sensor.astra_wifi_rssi
+            hours_to_show: 24
+            refresh_interval: 0
+          - type: sensor
+            entity: sensor.astra_light
+            graph: line
+title: Unilos

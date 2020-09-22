@@ -1,0 +1,42 @@
+views:
+  - badges:
+      - entity: sun.sun
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: entities
+            title: astra input tank
+            entities:
+              - binary_sensor.input_tank_high
+              - binary_sensor.input_tank_mid
+              - binary_sensor.input_tank_low
+          - type: entities
+            title: astra aerotank
+            entities:
+              - binary_sensor.aerotank
+          - type: entities
+            title: astra device
+            entities:
+              - sensor.wifi_signal
+              - sensor.light
+              - sensor.temperature
+      - type: vertical-stack
+        cards:
+          - type: history-graph
+            entities:
+              - sensor.temperature
+            hours_to_show: 24
+            refresh_interval: 0
+          - type: history-graph
+            entities:
+              - entity: sensor.wifi_signal
+            hours_to_show: 24
+            refresh_interval: 0
+          - type: sensor
+            entity: sensor.light
+            graph: line
+      - type: vertical-stack
+        cards:
+          - type: weather-forecast
+            entity: weather.lab
+title: Astra

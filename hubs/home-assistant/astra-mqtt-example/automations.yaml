@@ -1,0 +1,47 @@
+- id: tank_input
+  alias: tank_input
+  description: Input tank changed state notification
+  trigger:
+    - entity_id: binary_sensor.astra_input_tank
+      platform: state
+      to: 'on'
+      for:
+        seconds: 2
+    - entity_id: binary_sensor.astra_input_tank
+      platform: state
+      to: 'off'
+      for:
+        seconds: 2
+  action:
+    - service: notify.astra_status
+      data_template:
+        message: >
+          {% if is_state('binary_sensor.astra_input_tank', 'on') %}
+            'Notify: input tank HIGH'
+          {% else %}
+            'Notify: input tank OK'
+          {% endif %}
+
+- id: tank_air
+  alias: tank_air
+  description: Air tank changed state notification
+  trigger:
+    - entity_id: binary_sensor.astra_air_tank
+      platform: state
+      to: 'on'
+      for:
+        seconds: 2
+    - entity_id: binary_sensor.astra_air_tank
+      platform: state
+      to: 'off'
+      for:
+        seconds: 2
+  action:
+    - service: notify.astra_status
+      data_template:
+        message: >
+          {% if is_state('binary_sensor.astra_air_tank', 'on') %}
+            'Notify: Air tank HIGH'
+          {% else %}
+            'Notify: Air tank OK'
+          {% endif %}
