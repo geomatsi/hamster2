@@ -19,6 +19,23 @@ notify:
 tts:
   - platform: google_translate
 
+sensor:
+  - platform: template
+    sensors:
+      astra_input_gauge:
+        friendly_name: 'Astra gauge'
+        unit_of_measurement: '%'
+        value_template: >-
+          {% if is_state('binary_sensor.input_tank_high', 'on') %}
+            100
+          {% elif is_state('binary_sensor.input_tank_mid', 'on') %}
+            70
+          {% elif is_state('binary_sensor.input_tank_low', 'on') %}
+            40
+          {% else %}
+            10
+          {% endif %}
+
 group: !include groups.yaml
 automation: !include automations.yaml
 script: !include scripts.yaml

@@ -22,6 +22,14 @@ views:
               - sensor.temperature
       - type: vertical-stack
         cards:
+          - type: gauge
+            name: "Astra input"
+            unit: '%'
+            entity: sensor.astra_input_gauge
+            severity:
+              green: 45
+              yellow: 75
+              red: 95
           - type: history-graph
             entities:
               - sensor.temperature
