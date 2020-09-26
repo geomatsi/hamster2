@@ -53,18 +53,24 @@ binary_sensor:
   id: input_level_low
   pin: D5
   device_class: moisture
+  filters:
+    - invert:
 # input tank level mid
 - platform: gpio
   name: "input tank mid"
   id: input_level_mid
   pin: D6
   device_class: moisture
+  filters:
+    - invert:
 # input tank level high
 - platform: gpio
   name: "input tank high"
   id: input_level_high
   pin: D7
   device_class: moisture
+  filters:
+    - invert:
 
 sensor:
   - platform: wifi_signal
