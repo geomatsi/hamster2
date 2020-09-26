@@ -3,6 +3,8 @@ default_config:
 lovelace:
   mode: yaml
 
+mobile_app:
+
 telegram_bot:
   - platform: polling
     api_key: !secret telegram_api_key
