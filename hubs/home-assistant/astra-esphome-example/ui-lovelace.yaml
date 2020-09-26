@@ -48,6 +48,11 @@ views:
               - binary_sensor.input_tank_high
               - binary_sensor.input_tank_mid
               - binary_sensor.input_tank_low
+          - type: history-graph
+            entities:
+              - sensor.astra_input_gauge
+            hours_to_show: 80
+            refresh_interval: 0
   - title: Hamster
     cards:
       - type: vertical-stack
@@ -92,6 +97,11 @@ views:
             entities:
               - sensor.load_5m
             hours_to_show: 24
+            refresh_interval: 0
+          - type: history-graph
+            entities:
+              - sensor.disk_use_percent
+            hours_to_show: 80
             refresh_interval: 0
       - type: vertical-stack
         cards:
