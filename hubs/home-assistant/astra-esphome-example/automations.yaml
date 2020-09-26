@@ -49,3 +49,60 @@
           {% else %}
             'Notify: aerotank OK'
           {% endif %}
+
+- id: memory_card
+  alias: memory_card
+  description: Memory card space notification
+  trigger:
+    - entity_id: sensor.disk_use_percent
+      platform: numeric_state
+      above: 80
+      for:
+        minutes: 5
+  action:
+    - service: notify.astra_status
+      data_template:
+        message: "```memory card usage is high: {{ states.sensor.disk_use_percent.state }}\n```"
+
+- id: telegram_astra_report
+  alias: "Astra telegram report"
+  description: "Astra status report"
+  trigger:
+  - platform: event
+    event_type: telegram_command
+    event_data:
+      command: "/status"
+  condition: []
+  action:
+  - service: telegram_bot.send_message
+    data_template:
+      target: '{{ trigger.event.data.user_id }}'
+      message: "```
+input tank high: {{ states.binary_sensor.input_tank_high.state }}\n
+input tank mid: {{ states.binary_sensor.input_tank_mid.state }}\n
+input tank low: {{ states.binary_sensor.input_tank_low.state }}\n
+aerotank: {{ states.binary_sensor.aerotank.state }}\n
+temperature: {{ states.sensor.temperature.state }}\n
+WiFi signal: {{ states.sensor.wifi_signal.state }}\n
+```"
+
+- id: telegram_hamster_report
+  alias: "Hamster telegram report"
+  description: "Hamster status report"
+  trigger:
+  - platform: event
+    event_type: telegram_command
+    event_data:
+      command: "/hub"
+  condition: []
+  action:
+  - service: telegram_bot.send_message
+    data_template:
+      target: '{{ trigger.event.data.user_id }}'
+      message: "```
+memory usage: {{ states.sensor.memory_use_percent.state }}\n
+card usage: {{ states.sensor.disk_use_percent.state }}\n
+cpu usage: {{ states.sensor.processor_use.state }}\n
+average 5min load: {{ states.sensor.load_5m.state }}\n
+last boot: {{ states.sensor.last_boot.state }}\n
+```"
