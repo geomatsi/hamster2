@@ -35,6 +35,16 @@ sensor:
           {% else %}
             10
           {% endif %}
+  - platform: systemmonitor
+    resources:
+      - type: disk_use_percent
+      - type: disk_free
+      - type: disk_use
+      - type: memory_use_percent
+      - type: processor_use
+      - type: ipv4_address
+      - type: last_boot
+      - type: load_5m
 
 group: !include groups.yaml
 automation: !include automations.yaml

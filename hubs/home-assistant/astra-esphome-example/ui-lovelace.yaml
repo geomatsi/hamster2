@@ -1,15 +1,12 @@
+title: Home
 views:
-  - badges:
-      - entity: sun.sun
+  - title: Astra
+    badges:
+      - entity: sensor.wifi_signal
+      - entity: sensor.temperature
     cards:
       - type: vertical-stack
         cards:
-          - type: entities
-            title: astra input tank
-            entities:
-              - binary_sensor.input_tank_high
-              - binary_sensor.input_tank_mid
-              - binary_sensor.input_tank_low
           - type: entities
             title: astra aerotank
             entities:
@@ -22,14 +19,6 @@ views:
               - sensor.temperature
       - type: vertical-stack
         cards:
-          - type: gauge
-            name: "Astra input"
-            unit: '%'
-            entity: sensor.astra_input_gauge
-            severity:
-              green: 45
-              yellow: 75
-              red: 95
           - type: history-graph
             entities:
               - sensor.temperature
@@ -45,6 +34,85 @@ views:
             graph: line
       - type: vertical-stack
         cards:
+          - type: gauge
+            name: "Astra input"
+            unit: '%'
+            entity: sensor.astra_input_gauge
+            severity:
+              green: 45
+              yellow: 75
+              red: 95
+          - type: entities
+            title: astra input tank
+            entities:
+              - binary_sensor.input_tank_high
+              - binary_sensor.input_tank_mid
+              - binary_sensor.input_tank_low
+  - title: Hamster
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: gauge
+            name: "CPU usage"
+            unit: '%'
+            entity: sensor.processor_use
+            severity:
+              green: 50
+              yellow: 70
+              red: 90
+          - type: gauge
+            name: "Memory usage"
+            unit: '%'
+            entity: sensor.memory_use_percent
+            severity:
+              green: 50
+              yellow: 70
+              red: 90
+          - type: gauge
+            name: "Data card usage"
+            unit: '%'
+            entity: sensor.disk_use_percent
+            severity:
+              green: 50
+              yellow: 70
+              red: 90
+      - type: vertical-stack
+        cards:
+          - type: history-graph
+            entities:
+              - sensor.memory_use_percent
+            hours_to_show: 24
+            refresh_interval: 0
+          - type: history-graph
+            entities:
+              - sensor.processor_use
+            hours_to_show: 24
+            refresh_interval: 0
+          - type: history-graph
+            entities:
+              - sensor.load_5m
+            hours_to_show: 24
+            refresh_interval: 0
+      - type: vertical-stack
+        cards:
+          - type: entities
+            title: Data card usage
+            entities:
+              - sensor.disk_use
+              - sensor.disk_free
+          - type: entities
+            title: IPv4 address
+            entities:
+              - sensor.ipv4_address
+          - type: entities
+            title: Last boot
+            entities:
+              - sensor.last_boot
+  - title: Weather
+    badges:
+      - entity: sun.sun
+    cards:
+      - type: vertical-stack
+        cards:
           - type: weather-forecast
             entity: weather.lab
-title: Astra
