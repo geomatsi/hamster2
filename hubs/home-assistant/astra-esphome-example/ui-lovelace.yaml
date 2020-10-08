@@ -51,7 +51,7 @@ views:
           - type: history-graph
             entities:
               - sensor.astra_input_gauge
-            hours_to_show: 24
+            hours_to_show: 12
             refresh_interval: 0
   - title: Hamster
     cards:
